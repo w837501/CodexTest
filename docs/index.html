@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodexTest</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --bg: #f7f1e8;
+            --panel: #fffaf2;
+            --text: #1f2937;
+            --accent: #b45309;
+            --accent-soft: #fde6c8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            font-family: Georgia, "Times New Roman", serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top, #fff8ec 0%, rgba(255, 248, 236, 0.6) 30%, transparent 60%),
+                linear-gradient(135deg, var(--bg), #f2e2cc);
+        }
+
+        main {
+            width: min(680px, calc(100vw - 32px));
+            padding: 48px 40px;
+            border-radius: 24px;
+            background: var(--panel);
+            border: 1px solid #eadcc7;
+            box-shadow: 0 24px 60px rgba(107, 70, 20, 0.12);
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            letter-spacing: 0.04em;
+            color: var(--accent);
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="badge">GitHub Pages</div>
+        <h1>Hello World</h1>
+        <p>這個頁面已經可以直接透過 GitHub Pages 顯示在網路上。</p>
+    </main>
+</body>
+</html>
