@@ -280,7 +280,10 @@
                 statusBox.className = 'status success';
                 form.reset();
             } catch (error) {
-                setStatus(error.message || '發生未知錯誤', 'error');
+                const message = error instanceof TypeError
+                    ? '無法連到本機後端。請確認你有執行 ./run-local.sh 或 gradle run，並且頁面是從 http://localhost:8080 開啟。'
+                    : (error.message || '發生未知錯誤');
+                setStatus(message, 'error');
             } finally {
                 submitButton.disabled = false;
             }

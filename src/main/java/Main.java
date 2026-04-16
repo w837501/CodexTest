@@ -31,6 +31,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/", Main::handleHome);
+        server.createContext("/health", Main::handleHealth);
         server.createContext("/upload", Main::handleUpload);
         server.setExecutor(null);
         server.start();
@@ -39,18 +40,41 @@ public class Main {
     }
 
     private static void handleHome(HttpExchange exchange) throws IOException {
-        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+        String method = exchange.getRequestMethod();
+        if (!"GET".equalsIgnoreCase(method) && !"HEAD".equalsIgnoreCase(method)) {
             sendText(exchange, 405, "只支援 GET");
             return;
         }
 
         byte[] response = Files.readAllBytes(INDEX_PATH);
         exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
+        if ("HEAD".equalsIgnoreCase(method)) {
+            exchange.sendResponseHeaders(200, -1);
+            exchange.close();
+            return;
+        }
         exchange.sendResponseHeaders(200, response.length);
 
         try (OutputStream outputStream = exchange.getResponseBody()) {
             outputStream.write(response);
         }
+    }
+
+    private static void handleHealth(HttpExchange exchange) throws IOException {
+        addCorsHeaders(exchange.getResponseHeaders());
+        String method = exchange.getRequestMethod();
+        if (!"GET".equalsIgnoreCase(method) && !"HEAD".equalsIgnoreCase(method)) {
+            sendJson(exchange, 405, "{\"ok\":false,\"message\":\"只支援 GET\"}");
+            return;
+        }
+
+        String body = "{\"ok\":true,\"message\":\"server-ready\"}";
+        if ("HEAD".equalsIgnoreCase(method)) {
+            exchange.sendResponseHeaders(200, -1);
+            exchange.close();
+            return;
+        }
+        sendJson(exchange, 200, body);
     }
 
     private static void handleUpload(HttpExchange exchange) throws IOException {
@@ -87,12 +111,12 @@ public class Main {
             )));
         } catch (IOException e) {
             throw e;
-        } catch (Exception e) {
-            sendJson(exchange, 500, jsonObject(Map.of(
+            } catch (Exception e) {
+                sendJson(exchange, 500, jsonObject(Map.of(
                     "ok", "false",
                     "message", jsonString("上傳失敗：" + e.getMessage())
-            )));
-        }
+                )));
+            }
     }
 
     private static MultipartUpload parseMultipart(HttpExchange exchange) throws IOException {

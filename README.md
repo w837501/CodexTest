@@ -33,7 +33,7 @@ export GITHUB_TOKEN="你的 GitHub Token"
 export GITHUB_OWNER="w837501"
 export GITHUB_REPO="CodexTest"
 export GITHUB_BRANCH="master"
-gradle run
+./run-local.sh
 ```
 
 如果你沒有設定 `GITHUB_BRANCH`，系統會預設使用 `master`。
@@ -42,6 +42,18 @@ gradle run
 
 ```text
 http://localhost:8080
+```
+
+你也可以先確認後端有沒有正常啟動：
+
+```bash
+curl http://localhost:8080/health
+```
+
+正常時會回傳：
+
+```json
+{"ok":true,"message":"server-ready"}
 ```
 
 ## 頁面如何使用
@@ -87,3 +99,4 @@ git pull origin master
 1. 不要把 `GITHUB_TOKEN` 寫死在前端頁面裡，否則會外洩
 2. 這個上傳頁面必須透過 Java 伺服器執行，不能只靠純 GitHub Pages 完成安全上傳
 3. GitHub Pages 適合展示靜態頁面，但不適合直接安全地持有 GitHub 寫入權限
+4. 如果看到 `Failed to fetch`，通常代表本機後端沒啟動，或頁面不是從 `http://localhost:8080` 開啟
