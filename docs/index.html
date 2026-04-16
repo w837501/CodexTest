@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub 檔案上傳站</title>
+    <title>GitHub Pages 檔案上傳站</title>
     <style>
         :root {
             color-scheme: light;
@@ -196,16 +196,22 @@
 <body>
     <main>
         <section class="hero">
-            <div class="badge">GitHub Upload</div>
+            <div class="badge">GitHub Pages Upload</div>
             <h1>檔案上傳站</h1>
-            <p>從這個頁面選擇檔案後，後端會直接幫你送到 GitHub repository。你不需要再手動打 `git add`、`git commit`、`git push`。</p>
+            <p>這個頁面可以部署到 GitHub Pages。上傳時會呼叫你的 Cloudflare Worker，再由 Worker 安全地把檔案寫進 GitHub repository。</p>
         </section>
 
         <form id="upload-form">
             <div class="card">
+                <label for="apiBase">Worker API 網址</label>
+                <input id="apiBase" name="apiBase" type="text" placeholder="例如 https://github-upload-worker.your-subdomain.workers.dev" required>
+                <div class="hint">這裡填 Cloudflare Worker 的網址。頁面會記住你上次輸入的值。</div>
+            </div>
+
+            <div class="card">
                 <label for="file">選擇檔案</label>
                 <input id="file" name="file" type="file" required>
-                <div class="hint">支援一般檔案。後端會用 GitHub API 直接建立或覆蓋檔案。</div>
+                <div class="hint">支援一般檔案。Worker 會用 GitHub API 直接建立或覆蓋檔案。</div>
             </div>
 
             <div class="card">
@@ -220,33 +226,34 @@
         <div id="status" class="status">準備就緒，請選擇檔案。</div>
 
         <p class="meta">
-            這個頁面需要搭配本機 Java 伺服器執行，並設定 `GITHUB_TOKEN`、`GITHUB_OWNER`、`GITHUB_REPO` 環境變數。
+            GitHub Pages 只負責前端。真正寫入 GitHub 的權限放在 Cloudflare Worker 的 secret 裡。
         </p>
     </main>
 
     <script>
         const form = document.getElementById('upload-form');
+        const apiBaseInput = document.getElementById('apiBase');
         const fileInput = document.getElementById('file');
         const submitButton = document.getElementById('submit-button');
         const statusBox = document.getElementById('status');
-        const usingLocalServer = window.location.origin === 'http://localhost:8080';
+        const savedApiBase = localStorage.getItem('upload-api-base') || '';
 
         const setStatus = (message, type = '') => {
             statusBox.textContent = message;
             statusBox.className = `status ${type}`.trim();
         };
 
-        if (!usingLocalServer) {
-            setStatus('你目前開的是靜態頁面，不是本機上傳伺服器。請先執行 gradle run，然後從 http://localhost:8080 開啟。', 'error');
-        }
+        apiBaseInput.value = savedApiBase;
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            if (!usingLocalServer) {
-                setStatus('這個頁面目前沒有連到 Java 後端，所以無法上傳。請改從 http://localhost:8080 開啟。', 'error');
+            const apiBase = apiBaseInput.value.trim().replace(/\/+$/, '');
+            if (!apiBase) {
+                setStatus('請先填入 Cloudflare Worker API 網址。', 'error');
                 return;
             }
+            localStorage.setItem('upload-api-base', apiBase);
 
             if (!fileInput.files.length) {
                 setStatus('請先選擇要上傳的檔案。', 'error');
@@ -254,10 +261,10 @@
             }
 
             submitButton.disabled = true;
-            setStatus('上傳中，正在送到 GitHub...', '');
+            setStatus('上傳中，正在透過 Worker 送到 GitHub...', '');
 
             try {
-                const response = await fetch('/upload', {
+                const response = await fetch(`${apiBase}/upload`, {
                     method: 'POST',
                     body: new FormData(form)
                 });
@@ -269,7 +276,7 @@
                 if (contentType.includes('application/json')) {
                     result = JSON.parse(responseText);
                 } else {
-                    throw new Error('伺服器沒有回傳 JSON。通常代表你不是從 http://localhost:8080 開啟，或後端沒有啟動。');
+                    throw new Error('Worker 沒有回傳 JSON。請確認 Worker URL 正確，而且 Worker 已成功部署。');
                 }
 
                 if (!response.ok || !result.ok) {
@@ -281,7 +288,7 @@
                 form.reset();
             } catch (error) {
                 const message = error instanceof TypeError
-                    ? '無法連到本機後端。請確認你有執行 ./run-local.sh 或 gradle run，並且頁面是從 http://localhost:8080 開啟。'
+                    ? '無法連到 Worker。請確認 Worker 已部署、網址正確，而且有開啟 CORS。'
                     : (error.message || '發生未知錯誤');
                 setStatus(message, 'error');
             } finally {
