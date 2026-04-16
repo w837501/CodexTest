@@ -229,14 +229,24 @@
         const fileInput = document.getElementById('file');
         const submitButton = document.getElementById('submit-button');
         const statusBox = document.getElementById('status');
+        const usingLocalServer = window.location.origin === 'http://localhost:8080';
 
         const setStatus = (message, type = '') => {
             statusBox.textContent = message;
             statusBox.className = `status ${type}`.trim();
         };
 
+        if (!usingLocalServer) {
+            setStatus('你目前開的是靜態頁面，不是本機上傳伺服器。請先執行 gradle run，然後從 http://localhost:8080 開啟。', 'error');
+        }
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
+
+            if (!usingLocalServer) {
+                setStatus('這個頁面目前沒有連到 Java 後端，所以無法上傳。請改從 http://localhost:8080 開啟。', 'error');
+                return;
+            }
 
             if (!fileInput.files.length) {
                 setStatus('請先選擇要上傳的檔案。', 'error');
@@ -252,7 +262,16 @@
                     body: new FormData(form)
                 });
 
-                const result = await response.json();
+                const responseText = await response.text();
+                const contentType = response.headers.get('content-type') || '';
+                let result;
+
+                if (contentType.includes('application/json')) {
+                    result = JSON.parse(responseText);
+                } else {
+                    throw new Error('伺服器沒有回傳 JSON。通常代表你不是從 http://localhost:8080 開啟，或後端沒有啟動。');
+                }
+
                 if (!response.ok || !result.ok) {
                     throw new Error(result.message || '上傳失敗');
                 }
