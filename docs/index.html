@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Pages 檔案上傳站</title>
+    <title>CodexTest</title>
     <style>
         :root {
             color-scheme: light;
             --bg: #f7f1e8;
-            --panel: rgba(255, 250, 242, 0.94);
+            --panel: #fffaf2;
             --text: #1f2937;
-            --muted: #6b7280;
             --accent: #b45309;
-            --accent-strong: #92400e;
             --accent-soft: #fde6c8;
-            --line: #eadcc7;
-            --success: #166534;
-            --error: #b91c1c;
         }
 
         * {
@@ -28,40 +23,39 @@
             min-height: 100vh;
             display: grid;
             place-items: center;
-            padding: 24px;
             font-family: Georgia, "Times New Roman", serif;
             color: var(--text);
             background:
-                radial-gradient(circle at top, rgba(255, 248, 236, 0.95) 0%, rgba(255, 248, 236, 0.5) 28%, transparent 60%),
-                linear-gradient(135deg, var(--bg), #efddc5);
+                radial-gradient(circle at top, #fff8ec 0%, rgba(255, 248, 236, 0.6) 30%, transparent 60%),
+                linear-gradient(135deg, var(--bg), #f2e2cc);
         }
 
         main {
-            width: min(760px, 100%);
-            padding: 44px 34px;
-            border-radius: 28px;
+            width: min(680px, calc(100vw - 32px));
+            padding: 48px 40px;
+            border-radius: 24px;
             background: var(--panel);
-            border: 1px solid var(--line);
-            box-shadow: 0 24px 60px rgba(107, 70, 20, 0.14);
-            backdrop-filter: blur(14px);
+            border: 1px solid #eadcc7;
+            box-shadow: 0 24px 60px rgba(107, 70, 20, 0.12);
+            text-align: center;
         }
 
         h1 {
-            margin: 0 0 12px;
-            font-size: clamp(2.3rem, 5vw, 4.3rem);
+            margin: 0 0 16px;
+            font-size: clamp(2.2rem, 5vw, 4rem);
             letter-spacing: 0.04em;
             color: var(--accent);
         }
 
         p {
             margin: 0;
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.7;
         }
 
         .badge {
             display: inline-block;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
             padding: 8px 14px;
             border-radius: 999px;
             background: var(--accent-soft);
@@ -70,231 +64,13 @@
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
-
-        .hero {
-            margin-bottom: 28px;
-            text-align: center;
-        }
-
-        .hero p {
-            color: var(--muted);
-            max-width: 42rem;
-            margin: 0 auto;
-        }
-
-        form {
-            display: grid;
-            gap: 18px;
-        }
-
-        .card {
-            padding: 22px;
-            border-radius: 20px;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.55);
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-            letter-spacing: 0.04em;
-            color: var(--accent-strong);
-        }
-
-        input[type="text"],
-        input[type="file"] {
-            width: 100%;
-            font: inherit;
-        }
-
-        input[type="text"] {
-            padding: 14px 16px;
-            border-radius: 14px;
-            border: 1px solid #d7c4ab;
-            background: #fffdf9;
-        }
-
-        input[type="text"]:focus {
-            outline: 2px solid rgba(180, 83, 9, 0.18);
-            border-color: var(--accent);
-        }
-
-        .hint {
-            margin-top: 8px;
-            color: var(--muted);
-            font-size: 0.92rem;
-        }
-
-        button {
-            border: none;
-            border-radius: 999px;
-            padding: 14px 24px;
-            font: inherit;
-            font-size: 1rem;
-            color: white;
-            background: linear-gradient(135deg, var(--accent), #d97706);
-            cursor: pointer;
-            box-shadow: 0 12px 28px rgba(180, 83, 9, 0.24);
-            transition: transform 180ms ease, box-shadow 180ms ease;
-        }
-
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 16px 34px rgba(180, 83, 9, 0.28);
-        }
-
-        button:disabled {
-            opacity: 0.7;
-            cursor: wait;
-            transform: none;
-        }
-
-        .status {
-            min-height: 28px;
-            padding: 16px 18px;
-            border-radius: 16px;
-            border: 1px dashed var(--line);
-            background: rgba(255, 255, 255, 0.45);
-            font-size: 0.98rem;
-            line-height: 1.6;
-        }
-
-        .status.success {
-            color: var(--success);
-            border-style: solid;
-            border-color: rgba(22, 101, 52, 0.24);
-            background: rgba(240, 253, 244, 0.9);
-        }
-
-        .status.error {
-            color: var(--error);
-            border-style: solid;
-            border-color: rgba(185, 28, 28, 0.18);
-            background: rgba(254, 242, 242, 0.94);
-        }
-
-        .meta {
-            margin-top: 18px;
-            color: var(--muted);
-            font-size: 0.92rem;
-            text-align: center;
-        }
-
-        a {
-            color: var(--accent-strong);
-        }
-
-        @media (max-width: 640px) {
-            main {
-                padding: 28px 20px;
-                border-radius: 22px;
-            }
-        }
     </style>
 </head>
 <body>
     <main>
-        <section class="hero">
-            <div class="badge">GitHub Pages Upload</div>
-            <h1>檔案上傳站</h1>
-            <p>這個頁面可以部署到 GitHub Pages。上傳時會呼叫你的 Cloudflare Worker，再由 Worker 安全地把檔案寫進 GitHub repository。</p>
-        </section>
-
-        <form id="upload-form">
-            <div class="card">
-                <label for="apiBase">Worker API 網址</label>
-                <input id="apiBase" name="apiBase" type="text" placeholder="例如 https://github-upload-worker.your-subdomain.workers.dev" required>
-                <div class="hint">這裡填 Cloudflare Worker 的網址。頁面會記住你上次輸入的值。</div>
-            </div>
-
-            <div class="card">
-                <label for="file">選擇檔案</label>
-                <input id="file" name="file" type="file" required>
-                <div class="hint">支援一般檔案。Worker 會用 GitHub API 直接建立或覆蓋檔案。</div>
-            </div>
-
-            <div class="card">
-                <label for="targetPath">GitHub 儲存路徑</label>
-                <input id="targetPath" name="targetPath" type="text" placeholder="例如 uploads/report.pdf 或留空">
-                <div class="hint">留空時，系統會自動上傳到 `uploads/檔名`。</div>
-            </div>
-
-            <button id="submit-button" type="submit">上傳到 GitHub</button>
-        </form>
-
-        <div id="status" class="status">準備就緒，請選擇檔案。</div>
-
-        <p class="meta">
-            GitHub Pages 只負責前端。真正寫入 GitHub 的權限放在 Cloudflare Worker 的 secret 裡。
-        </p>
+        <div class="badge">GitHub Pages</div>
+        <h1>Hello World</h1>
+        <p>這個頁面已經可以直接透過 GitHub Pages 顯示在網路上。</p>
     </main>
-
-    <script>
-        const form = document.getElementById('upload-form');
-        const apiBaseInput = document.getElementById('apiBase');
-        const fileInput = document.getElementById('file');
-        const submitButton = document.getElementById('submit-button');
-        const statusBox = document.getElementById('status');
-        const savedApiBase = localStorage.getItem('upload-api-base') || '';
-
-        const setStatus = (message, type = '') => {
-            statusBox.textContent = message;
-            statusBox.className = `status ${type}`.trim();
-        };
-
-        apiBaseInput.value = savedApiBase;
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const apiBase = apiBaseInput.value.trim().replace(/\/+$/, '');
-            if (!apiBase) {
-                setStatus('請先填入 Cloudflare Worker API 網址。', 'error');
-                return;
-            }
-            localStorage.setItem('upload-api-base', apiBase);
-
-            if (!fileInput.files.length) {
-                setStatus('請先選擇要上傳的檔案。', 'error');
-                return;
-            }
-
-            submitButton.disabled = true;
-            setStatus('上傳中，正在透過 Worker 送到 GitHub...', '');
-
-            try {
-                const response = await fetch(`${apiBase}/upload`, {
-                    method: 'POST',
-                    body: new FormData(form)
-                });
-
-                const responseText = await response.text();
-                const contentType = response.headers.get('content-type') || '';
-                let result;
-
-                if (contentType.includes('application/json')) {
-                    result = JSON.parse(responseText);
-                } else {
-                    throw new Error('Worker 沒有回傳 JSON。請確認 Worker URL 正確，而且 Worker 已成功部署。');
-                }
-
-                if (!response.ok || !result.ok) {
-                    throw new Error(result.message || '上傳失敗');
-                }
-
-                statusBox.innerHTML = `上傳成功：${result.path}<br><a href="${result.url}" target="_blank" rel="noreferrer">查看 GitHub 上的檔案</a>`;
-                statusBox.className = 'status success';
-                form.reset();
-            } catch (error) {
-                const message = error instanceof TypeError
-                    ? '無法連到 Worker。請確認 Worker 已部署、網址正確，而且有開啟 CORS。'
-                    : (error.message || '發生未知錯誤');
-                setStatus(message, 'error');
-            } finally {
-                submitButton.disabled = false;
-            }
-        });
-    </script>
 </body>
 </html>
